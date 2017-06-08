@@ -11,7 +11,7 @@ class Participant(Base):
     participant_id = Column(Integer, primary_key=True)
     wioa_participant = Column(Boolean)
     wioa_lta_participant = Column(Boolean)
-    wages = relationship('Wage')
+    wages = relationship('Wage', backref='participant')
     programs = relationship('Program', secondary='participant_program')
 
 
@@ -58,7 +58,7 @@ class Outcome(Base):
 
     potential_outcome_id = Column(Integer, primary_key=True)
     description = Column(String(250))
-    programs = relationship('Program')
+    programs = relationship('Program', backref='outcome')
 
 
 class ExitType(Base):
@@ -67,7 +67,7 @@ class ExitType(Base):
     type_id = Column(Integer, primary_key=True)
     name = Column(String(140))
     description = Column(String(250))
-    participant_programs = relationship('ParticipantProgram')
+    participant_programs = relationship('ParticipantProgram', backref='exit_type')
 
 
 class Wage(Base):
@@ -85,5 +85,6 @@ class EntityType(Base):
     type_id = Column(Integer, primary_key=True)
     name = Column(String(140))
     description = Column(String(250))
-    providers = relationship('Provider')
+    providers = relationship('Provider', backref='entity_type')
+
 
