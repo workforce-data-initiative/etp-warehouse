@@ -1,6 +1,12 @@
+"""
+DDL and other schema creational operations for TPOT transactional tables
+holding pre-aggregated data for outcomes analysis
+"""
+
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, ForeignKey, Integer, Float, String, Boolean, Date
 from sqlalchemy.orm import relationship
+
 
 Base = declarative_base()
 
@@ -88,3 +94,5 @@ class EntityType(Base):
     providers = relationship('Provider', backref='entity_type')
 
 
+#def create_schema(db_engine):
+#    Base.metadata.create_all(db_engine)
