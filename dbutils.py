@@ -6,21 +6,6 @@ from sqlalchemy.orm import sessionmaker, Session
 logger = logging.getLogger(__name__)
 
 
-def get_dbconf(conf_file, db_adapter):
-
-    conf = None
-
-    try:
-        with open(conf_file, 'r') as yml_conf:
-            conf = yaml.load(yml_conf)
-    except FileNotFoundError as err:
-        logger.debug(err)
-
-    for db_conf in conf:
-        if db_conf == db_adapter:
-            return db_conf
-
-
 class DbConfValidator(object):
 
     @staticmethod
@@ -29,7 +14,15 @@ class DbConfValidator(object):
 
 
 class SqliteDbConfValidator(DbConfValidator):
-    pass
+
+    @staticmethod
+    def validate_conf(db_conf):
+        logger.info("Validating database connection configs")
+
+        if db_conf is None:
+            raise ValueError("Database connection configs required")
+
+        return db_conf
 
 
 class PsqlDbConfValidator(DbConfValidator):
@@ -40,6 +33,8 @@ class PsqlDbConfValidator(DbConfValidator):
 
         if db_conf is None:
             raise ValueError("Database connection configs required")
+
+        return db_conf
 
 
 class DbConnectionUri(object):
@@ -87,4 +82,31 @@ class DbConnection(object):
         self.Session.configure(bind=self.engine)
         return Session()
 
+
+db_uris = {'sqlite': SqliteDbConnectionUri().__class__,
+           'postgresql': PsqlDbConnectionUri().__class__}
+
+
+def read_dbconf(conf_file, db_adapter):
+
+    conf = None
+
+    try:
+        with open(conf_file, 'r') as yml_conf:
+            conf = yaml.load(yml_conf)
+    except FileNotFoundError as err:
+        logger.debug(err)
+
+    return conf.get(db_adapter)
+
+
+def conn_uri_factory(conf_file, db_adapter):
+    db_conf = read_dbconf(conf_file, db_adapter)
+
+    # dynamically select connection uri class
+    UriClass = db_uris.get(db_adapter)
+    return UriClass().build_conn_uri(db_conf)
+
+
 # db inspector
+
