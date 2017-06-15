@@ -1,0 +1,8 @@
+# Database connection parameters
+
+postgresql:
+    host:
+    port:
+    username:
+    password:
+    database:
