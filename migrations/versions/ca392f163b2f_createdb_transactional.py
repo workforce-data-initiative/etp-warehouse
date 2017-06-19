@@ -20,11 +20,11 @@ depends_on = None
 
 # load the Alembic configuration
 alembic_ini = os.path.join(os.path.dirname(__file__), '../../', 'alembic.ini')
+migration_context = context.get_context()
 
 
 # add schemas
 def upgrade():
-    migration_context = context.get_context()
     conn = migration_context.bind
 
     with conn.begin() as transaction:
