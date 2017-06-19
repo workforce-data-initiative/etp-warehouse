@@ -13,10 +13,24 @@ class DbConfValidator(object):
         pass
 
 
+class DbConnectionUri(object):
+
+    @classmethod
+    def build_conn_uri(cls, db_conf):
+        pass
+
+
 class SqliteDbConfValidator(DbConfValidator):
 
     @staticmethod
     def validate_conf(db_conf):
+        """
+        Validate SQLite database connection parameters
+
+        :param db_conf: dict of connection parameters
+        :return: dict of validate connection parameters
+        """
+
         logger.info("Validating database connection configs")
 
         if db_conf is None:
@@ -29,19 +43,19 @@ class PsqlDbConfValidator(DbConfValidator):
 
     @staticmethod
     def validate_conf(db_conf):
+        """
+        Validate PostgreSQL database connection parameters
+
+        :param db_conf: dict of connection parameters
+        :return: dict of validate connection parameters
+        """
+
         logger.info("Validating database connection configs")
 
         if db_conf is None:
             raise ValueError("Database connection configs required")
 
         return db_conf
-
-
-class DbConnectionUri(object):
-
-    @classmethod
-    def build_conn_uri(cls, db_conf):
-        pass
 
 
 class SqliteDbConnectionUri(DbConnectionUri):
@@ -51,6 +65,14 @@ class SqliteDbConnectionUri(DbConnectionUri):
 
     @classmethod
     def build_conn_uri(cls, db_conf):
+        """
+        Create database connection uri for SQLite
+
+        :param db_conf: dict of connection parameters
+        :return: valid connection string for database built
+                from parameters passed in db_conf
+        """
+
         db_conf = SqliteDbConfValidator.validate_conf(db_conf)
 
         return cls.conn_uri.format(db_adapter=cls.db_adapter, db_path=db_conf['database'])
@@ -63,6 +85,14 @@ class PsqlDbConnectionUri(DbConnectionUri):
 
     @classmethod
     def build_conn_uri(cls, db_conf):
+        """
+        Create database connection uri for PostgreSQL
+
+        :param db_conf: dict of connection parameters
+        :return: valid connection string for database built
+                from parameters passed in db_conf
+        """
+
         db_conf = PsqlDbConfValidator.validate_conf(db_conf)
 
         return cls.conn_uri.format(db_adapter=cls.db_adapter, username=db_conf['username'],
@@ -77,30 +107,57 @@ class DbConnection(object):
         self.engine = create_engine(conn_uri)
 
     def start_session(self):
+        """
+        Start database connection session
+
+        :return: new session object bound to instance engine created from
+                connection string passed on DbConnection object creation
+        """
+
         logger.info("Starting database connection session")
 
         self.Session.configure(bind=self.engine)
         return Session()
 
 
+# selector for supported database connections
 db_uris = {'sqlite': SqliteDbConnectionUri().__class__,
            'postgresql': PsqlDbConnectionUri().__class__}
 
 
 def read_dbconf(conf_file, db_adapter):
+    """
+    Read (yaml format) database configuration file
+
+    :param conf_file: YAML file containing database connection params
+    :param db_adapter: Database adapter name
+    :return: dict of database conf for the specified db_adapter
+    """
 
     conf = None
 
     try:
         with open(conf_file, 'r') as yml_conf:
             conf = yaml.load(yml_conf)
-    except FileNotFoundError as err:
+    except(FileNotFoundError, yaml.YAMLError) as err:
         logger.debug(err)
 
     return conf.get(db_adapter)
 
 
 def conn_uri_factory(conf_file, db_adapter):
+    """
+    Create the applicable connection uri for the database adapter
+    passed using parameters read from config file
+
+    :param conf_file: YAML file containing database connection params
+                      used by SQLAlchemy to create connection. Supported
+                      fields include SQLAlchemy database adapter name, host
+                      port, username, password, database
+    :param db_adapter: Database adapter name as accepted by SQLAlchemy
+    :return: SQLAlchemy connection uri for the database with specified adapter
+    """
+
     db_conf = read_dbconf(conf_file, db_adapter)
 
     # dynamically select connection uri class
