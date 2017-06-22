@@ -7,6 +7,7 @@ Create Date: 2017-06-15 21:36:50.379042
 """
 import os
 from alembic import context, command
+from alembic import op
 from alembic.config import Config
 
 from models.transactional import Base
@@ -29,6 +30,7 @@ def upgrade():
 
     with conn.begin() as transaction:
         Base.metadata.create_all(conn)
+        #op.get_bind()
 
         # generate the version table, "stamping" it with the most recent rev:
         # command.stamp(Config(alembic_ini), 'head')

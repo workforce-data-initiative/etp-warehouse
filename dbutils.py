@@ -131,16 +131,18 @@ def read_dbconf(conf_file, db_adapter):
 
     :param conf_file: YAML file containing database connection params
     :param db_adapter: Database adapter name
+    :raises: TypeError, when conf_file or db_adapter passed is None
+             FileNotFoundError if conf_file is not found or yaml.YAMLError
+             if conf_file yaml is not read
     :return: dict of database conf for the specified db_adapter
     """
-
-    conf = None
 
     try:
         with open(conf_file, 'r') as yml_conf:
             conf = yaml.load(yml_conf)
-    except(FileNotFoundError, yaml.YAMLError) as err:
+    except(TypeError, FileNotFoundError, yaml.YAMLError) as err:
         logger.debug(err)
+        raise
 
     return conf.get(db_adapter)
 
@@ -158,7 +160,11 @@ def conn_uri_factory(conf_file, db_adapter):
     :return: SQLAlchemy connection uri for the database with specified adapter
     """
 
-    db_conf = read_dbconf(conf_file, db_adapter)
+    try:
+        db_conf = read_dbconf(conf_file, db_adapter)
+    except Exception as err:
+        logger.debug(err)
+        raise
 
     # dynamically select connection uri class
     UriClass = db_uris.get(db_adapter)
@@ -166,4 +172,5 @@ def conn_uri_factory(conf_file, db_adapter):
 
 
 # db inspector
+
 
