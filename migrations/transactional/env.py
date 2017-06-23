@@ -37,7 +37,6 @@ def usage():
 
 
 def conn_url():
-    print(config.get_main_option("default_dbconf"))
 
     try:
         url = conn_uri_factory(args.get("dbconf", config.get_main_option("default_dbconf")),
