@@ -25,22 +25,22 @@ target_metadata = Base.metadata
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
-args = context.get_x_argument(as_dictionary=True)
+xargs = context.get_x_argument(as_dictionary=True)
 
 
 def usage():
     usage_str = "Usage: alembic [-c CONFIG] -n SCHEMA NAME " \
                 "[--adapter=SQLALCHEMY ADAPTER ][--dbconf=DB (YAML) CONFIG]"
     eg_str = "       alembic -c alembic.ini -n schema1 " \
-             "--adapter=sqlite --dbconf=conf/db.conf"
+             "--adapter=sqlite --dbconf=conf/db.yml"
     return "{0}\n{1}".format(usage_str, eg_str)
 
 
 def conn_url():
-
     try:
-        url = conn_uri_factory(args.get("dbconf", config.get_main_option("default_dbconf")),
-                               args.get("adapter", config.get_main_option("default_adapter")))
+        url = conn_uri_factory(xargs.get("dbconf", config.get_main_option("default_dbconf")),
+                               xargs.get("adapter", config.get_main_option("default_adapter")),
+                               config.config_ini_section)
     except Exception as err:
         logger.debug(err)
         raise
