@@ -16,7 +16,7 @@ jobs:
       - VENV_DIR: "~/wdi/pyenv/tpot-wh"
 
     steps:
-      -run:
+      - run:
         name: Create working directories
         pwd: ~
         command: mkdir -pv ~/wdi/pyenv
