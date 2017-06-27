@@ -13,13 +13,16 @@ jobs:
     environment:
       - VENV_NAME:  "tpot-wh"
 
-      - VENV_DIR: "~/wdi/pyenv/tpot-wh"
+      - VENV_DIR: "~/pyenv/tpot-wh"
 
     steps:
       - run:
           name: Create working directories
           pwd: ~
-          command: mkdir -pv ~/wdi/pyenv
+          command: |
+            rm -rfv ~/pyenv && mkdir -pv ~/pyenv
+            rm -rfv ~/wdi && mkdir -pv ~/wdi
+            git init ~/wdi
 
       - checkout
 
