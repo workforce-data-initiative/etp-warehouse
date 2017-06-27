@@ -1,0 +1,43 @@
+version: 2
+
+jobs:
+
+  build:
+    working_directory: ~/wdi
+
+    docker:
+      - image: circleci/python:3.6.1
+
+      - image: circleci/postgres:9.6.3
+
+    environment:
+      - PROJECT_DIR: "~/wdi/tpot-warehouse"
+
+      - VENV_NAME:  "tpot-wh"
+
+      - VENV_DIR: "~/py-venv/${VENV_NAME}"
+
+    steps:
+      - checkout:
+
+      - run:
+          name: activate-venv
+          command: |
+              python3 -m venv "${VENV_NAME}"
+              . tpot-wh/bin/activate
+          working_directory: {{ VENV_DIR }}
+
+      - run:
+          name: pip-install
+          command: pip install -U requirements.dev.txt
+          working_directory: {{ PROJECT_DIR }}
+
+      - run:
+          name: update-db-config
+          command: mv conf/db.dev.yml conf/db.yml
+          working_directory: {{ PROJECT_DIR }}
+
+      - run:
+          name: test-transactional
+          command: pytest -v --name transactional tests/test_dbtransactional.py
+          working_directory: {{ PROJECT_DIR }}

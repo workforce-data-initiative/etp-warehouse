@@ -1,0 +1,13 @@
+# Database connection parameters
+
+sqlite:
+  transactional:
+    database: /databases/tpot.db
+
+postgresql:
+  transactional:
+      host: localhost
+      port: 5432
+      username: postgres
+      password: postgres
+      database: tpot
