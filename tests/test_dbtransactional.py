@@ -3,13 +3,12 @@ Tests for transactional database operations
 """
 
 
-from dbutils import DbConnection
+def test_db_tables_created(db_inspector, db_tables, alembic_tables):
+    # inspect db created for tables
+    table_list = db_inspector.get_table_names()
+    print(table_list)
+    print(db_tables)
 
-
-def test_db_created(alchemy_url, db_setup):
-    # confirm connection can be made to db created
-
-    conn = DbConnection(alchemy_url)
-    assert conn is not None
+    assert table_list == alembic_tables + db_tables
 
 
