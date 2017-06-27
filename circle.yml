@@ -15,7 +15,7 @@ jobs:
 
       - VENV_NAME:  "tpot-wh"
 
-      - VENV_DIR: "~/py-venv/${VENV_NAME}"
+      - VENV_DIR: "~/tpot-wh"
 
     steps:
       - checkout:
@@ -24,20 +24,20 @@ jobs:
           name: activate-venv
           command: |
               python3 -m venv "${VENV_NAME}"
-              . tpot-wh/bin/activate
-          working_directory: {{ VENV_DIR }}
-
+              cd "${VENV_DIR}"
+              . tpot-wh/bin/activate "${VENV_NAME}"
+              working_directory: ~
       - run:
           name: pip-install
           command: pip install -U requirements.dev.txt
-          working_directory: {{ PROJECT_DIR }}
+          working_directory: ~/wdi/tpot-warehouse
 
       - run:
           name: update-db-config
           command: mv conf/db.dev.yml conf/db.yml
-          working_directory: {{ PROJECT_DIR }}
+          working_directory: ~/wdi/tpot-warehouse
 
       - run:
           name: test-transactional
           command: pytest -v --name transactional tests/test_dbtransactional.py
-          working_directory: {{ PROJECT_DIR }}
+          working_directory: ~/wdi/tpot-warehouse
