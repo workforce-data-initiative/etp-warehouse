@@ -18,7 +18,7 @@ jobs:
       - VENV_DIR: "~/tpot-wh"
 
     steps:
-      - checkout:
+      - checkout
 
       - run:
           name: Activate python virtual environment
