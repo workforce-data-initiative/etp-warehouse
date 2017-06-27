@@ -17,9 +17,9 @@ jobs:
 
     steps:
       - run:
-        name: Create working directories
-        pwd: ~
-        command: mkdir -pv ~/wdi/pyenv
+          name: Create working directories
+          pwd: ~
+          command: mkdir -pv ~/wdi/pyenv
 
       - checkout
 
