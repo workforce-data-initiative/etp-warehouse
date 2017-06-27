@@ -22,22 +22,23 @@ jobs:
 
       - run:
           name: Activate python virtual environment
+          working_directory: ~
           command: |
               python3 -m venv "${VENV_NAME}"
               cd "${VENV_DIR}"
               . tpot-wh/bin/activate "${VENV_NAME}"
-          working_directory: ~
+
       - run:
-          name: Pip install required python modules
+          name: Install required python modules
+          working_directory: ~/wdi/tpot-warehouse
           command: pip install -U requirements.dev.txt
-          working_directory: ~/wdi/tpot-warehouse
 
       - run:
-          name: Update database configuration test parameters
+          working_directory: ~/wdi/tpot-warehouse
+          name: Update database connection parameters
           command: mv conf/db.dev.yml conf/db.yml
-          working_directory: ~/wdi/tpot-warehouse
 
       - run:
-          name: Test transactional database application
+          name: Run transactional database application tests
           command: pytest -v --name transactional tests/test_dbtransactional.py
           working_directory: ~/wdi/tpot-warehouse
