@@ -22,7 +22,6 @@ jobs:
           command: |
             rm -rfv ~/pyenv && mkdir -pv ~/pyenv
             rm -rfv ~/wdi && mkdir -pv ~/wdi
-            git init ~/wdi
 
       - checkout
 
