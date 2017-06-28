@@ -9,6 +9,10 @@ jobs:
       - image: circleci/python:3.6.1
 
       - image: circleci/postgres:9.6.3
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: tpot
 
     environment:
       - VENV_NAME:  "tpot-wh"
@@ -39,4 +43,4 @@ jobs:
           name: Run transactional database application tests
           command: |
             . ~/pyenv/tpot-wh/bin/activate
-            pytest -v --name transactional tests/test_dbtransactional.py
+            pytest -v --name transactional --adapter postgresql tests/test_dbtransactional.py
