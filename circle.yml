@@ -13,8 +13,6 @@ jobs:
     environment:
       - VENV_NAME:  "tpot-wh"
 
-      - VENV_DIR: "~/pyenv/tpot-wh"
-
     steps:
       - run:
           name: Create working directories
@@ -31,11 +29,7 @@ jobs:
           command: |
               python3 -m venv "${VENV_NAME}"
               . tpot-wh/bin/activate
-
-      - run:
-          name: Install required python modules
-          command: |
-            pip install -r requirements.dev.txt
+              pip install -r ~/wdi/tpot-warehouse/requirements.dev.txt
 
       - run:
           name: Update database connection parameters
@@ -43,4 +37,6 @@ jobs:
 
       - run:
           name: Run transactional database application tests
-          command: pytest -v --name transactional tests/test_dbtransactional.py
+          command: |
+            . ~/pyenv/tpot-wh/bin/activate
+            pytest -v --name transactional tests/test_dbtransactional.py
