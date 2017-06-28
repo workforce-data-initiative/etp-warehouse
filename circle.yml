@@ -27,11 +27,10 @@ jobs:
 
       - run:
           name: Activate python virtual environment
-          pwd: ~/wdi/pyenv
+          pwd: ~/pyenv
           command: |
               python3 -m venv "${VENV_NAME}"
-              cd "${VENV_DIR}"
-              . tpot-wh/bin/activate "${VENV_NAME}"
+              . tpot-wh/bin/activate
 
       - run:
           name: Install required python modules
@@ -41,7 +40,7 @@ jobs:
       - run:
           name: Update database connection parameters
           pwd: ~/wdi/tpot-warehouse
-          command: mv conf/db.dev.yml conf/db.yml
+          command: mv -v conf/db.dev.yml conf/db.yml
 
       - run:
           name: Run transactional database application tests
