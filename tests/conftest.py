@@ -108,6 +108,8 @@ def db_tables(schema_name):
                     'exit_type', 'wage', 'entity_type']
     else:
         tbl_list = []
+
+    # sort table list - easier test comparison
     tbl_list.sort()
 
     return tbl_list
