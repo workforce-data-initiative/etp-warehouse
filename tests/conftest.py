@@ -42,23 +42,28 @@ def db_conf(request):
 
 
 @pytest.fixture(scope='session')
-def alchemy_url(schema_name, db_conf, request):
-    return conn_uri_factory(db_conf,
-                            request.config.getoption('--adapter'),
-                            schema_name)
+def db_adapter(request):
+    return request.config.getoption('--adapter')
+
+
+@pytest.fixture(scope='session')
+def alchemy_url(db_conf, db_adapter, schema_name, request):
+    return conn_uri_factory(db_conf, db_adapter, schema_name)
 
 
 @pytest.fixture(scope='session', autouse=True)
-def db_setup(alembic_cfg, schema_name, db_conf, alchemy_url, request):
+def db_setup(alembic_cfg, schema_name, db_conf, db_adapter, alchemy_url, request):
     # run all db migrations
     config.main(['-c', alembic_cfg, '-n', schema_name,
                  '-x', 'dbconf={0}'.format(db_conf),
+                 '-x', 'adapter={0}'.format(db_adapter),
                  'upgrade', 'head'])
 
     def db_drop():
         # db teardown - drop all
         config.main(['-c', alembic_cfg, '-n', schema_name,
                      '-x', 'dbconf={0}'.format(db_conf),
+                     '-x', 'adapter={0}'.format(db_adapter),
                      'downgrade', 'base'])
         # drop db incl. alembic tables
         drop_database(alchemy_url)
