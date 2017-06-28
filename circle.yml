@@ -3,7 +3,7 @@ version: 2
 jobs:
 
   build:
-    working_directory: ~/wdi
+    working_directory: ~/wdi/tpot-warehouse
 
     docker:
       - image: circleci/python:3.6.1
@@ -21,7 +21,7 @@ jobs:
           pwd: ~
           command: |
             rm -rfv ~/pyenv && mkdir -pv ~/pyenv
-            rm -rfv ~/wdi && mkdir -pv ~/wdi
+            rm -rfv ~/wdi/tpot-warehouse && mkdir -pv ~/wdi/tpot-warehouse
 
       - checkout
 
@@ -34,17 +34,13 @@ jobs:
 
       - run:
           name: Install required python modules
-          pwd: ~/wdi/tpot-warehouse
           command: |
-            ls -la ../
             pip install -r requirements.dev.txt
 
       - run:
           name: Update database connection parameters
-          pwd: ~/wdi/tpot-warehouse
           command: mv -v conf/db.dev.yml conf/db.yml
 
       - run:
           name: Run transactional database application tests
-          pwd: ~/wdi/tpot-warehouse
           command: pytest -v --name transactional tests/test_dbtransactional.py
