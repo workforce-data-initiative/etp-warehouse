@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# create postgreSQL user to start the db daemon
+# replace pga_hba.conf (authorities definition)
+# replace postgresql.conf from config....
+# initdb
+#   pg_ctl initdb -D <data path> -l <log file> to initialize db cluster
+#       options: -L <location of input files>
+#                —pgdata=
+#                —xlogdir <transaction/write-ahead log directory>, put on separate disk
+#                —auth-host=<authmethod>
+#		         —auth-local=<authmethod>
+#		         —pwfile=
+#		         —locale=
