@@ -1,0 +1,46 @@
+version: 2
+
+jobs:
+
+  build:
+    working_directory: ~/wdi/tpot-warehouse
+
+    docker:
+      - image: circleci/python:3.6.1
+
+      - image: circleci/postgres:9.6.3
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: tpot
+
+    environment:
+      - VENV_NAME:  "tpot-wh"
+
+    steps:
+      - run:
+          name: Create working directories
+          pwd: ~
+          command: |
+            rm -rfv ~/pyenv && mkdir -pv ~/pyenv
+            rm -rfv ~/wdi/tpot-warehouse && mkdir -pv ~/wdi/tpot-warehouse
+
+      - checkout
+
+      - run:
+          name: Activate python virtual environment
+          pwd: ~/pyenv
+          command: |
+              python3 -m venv "${VENV_NAME}"
+              . tpot-wh/bin/activate
+              pip install -r ~/wdi/tpot-warehouse/requirements.dev.txt
+
+      - run:
+          name: Update database connection parameters
+          command: mv -v conf/db.dev.yml conf/db.yml
+
+      - run:
+          name: Run transactional database application tests
+          command: |
+            . ~/pyenv/tpot-wh/bin/activate
+            pytest -v --name transactional --adapter postgresql tests/test_dbtransactional.py

@@ -125,27 +125,31 @@ db_uris = {'sqlite': SqliteDbConnectionUri().__class__,
            'postgresql': PsqlDbConnectionUri().__class__}
 
 
-def read_dbconf(conf_file, db_adapter):
+def read_dbconf(conf_file, db_adapter, schema_name):
     """
     Read (yaml format) database configuration file
 
     :param conf_file: YAML file containing database connection params
     :param db_adapter: Database adapter name
+    :param schema_name: 'schema' used loosely here to indicate which
+                        database is being accessed, [transactional | warehouse]
+    :raises: TypeError, when conf_file or db_adapter passed is None
+             FileNotFoundError if conf_file is not found or yaml.YAMLError
+             if conf_file yaml is not read
     :return: dict of database conf for the specified db_adapter
     """
-
-    conf = None
 
     try:
         with open(conf_file, 'r') as yml_conf:
             conf = yaml.load(yml_conf)
-    except(FileNotFoundError, yaml.YAMLError) as err:
+    except(TypeError, FileNotFoundError, yaml.YAMLError) as err:
         logger.debug(err)
+        raise
 
-    return conf.get(db_adapter)
+    return conf.get(db_adapter).get(schema_name)
 
 
-def conn_uri_factory(conf_file, db_adapter):
+def conn_uri_factory(conf_file, db_adapter, schema_name):
     """
     Create the applicable connection uri for the database adapter
     passed using parameters read from config file
@@ -155,10 +159,16 @@ def conn_uri_factory(conf_file, db_adapter):
                       fields include SQLAlchemy database adapter name, host
                       port, username, password, database
     :param db_adapter: Database adapter name as accepted by SQLAlchemy
+    :param schema_name: 'schema' used loosely here to indicate which
+                        database is being accessed, [transactional | warehouse]
     :return: SQLAlchemy connection uri for the database with specified adapter
     """
 
-    db_conf = read_dbconf(conf_file, db_adapter)
+    try:
+        db_conf = read_dbconf(conf_file, db_adapter, schema_name)
+    except Exception as err:
+        logger.debug(err)
+        raise
 
     # dynamically select connection uri class
     UriClass = db_uris.get(db_adapter)
@@ -166,4 +176,5 @@ def conn_uri_factory(conf_file, db_adapter):
 
 
 # db inspector
+
 
