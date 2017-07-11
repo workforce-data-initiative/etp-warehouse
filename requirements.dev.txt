@@ -3,4 +3,4 @@ sqlalchemy==1.1.11
 sqlalchemy-utils==0.32.14
 psycopg2==2.7.1
 alembic==0.9.3
-pytest==3.1.2
+pytest==3.1.3
