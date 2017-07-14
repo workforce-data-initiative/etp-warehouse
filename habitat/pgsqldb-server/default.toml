@@ -1,9 +1,7 @@
-# Templates for postgresql database configurations
 
-db.ver = 9.6.3
-db.user = tpotdb
-db.host = localhost
-db.port = 5432
-db.ssl.port = 5433
+[db]
+host = "localhost"
+port = 5432
 
-
+[ssl]
+port = 5433
