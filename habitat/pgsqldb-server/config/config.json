@@ -1,0 +1,8 @@
+
+{
+  "db_version": "{{cfg.db_version}}",
+  "db_user": "{{cfg.db_user}}",
+  "db_host": "{{cfg.db_host}}",
+  "db_port": "{{cfg.db_port}}",
+  "db_ssl_port": "{{cfg.db_ssl_port}}"
+}
