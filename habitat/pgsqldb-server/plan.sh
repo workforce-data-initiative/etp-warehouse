@@ -55,17 +55,11 @@ do_build() {
   # ./configure --with-python --with-openssl --with-includes=/usr/local/include/openssl --with-libraries=/usr/local/lib
 }
 
-# Run postgresql regression suite
-do_check() {
-  cd "${HAB_CACHE_SRC_PATH}/postgresql-${db_version}"
-  make check
-}
-
 # Manually installing postgresql since habitat core
 # postgres is not yet fully supported for cluster mode
 do_install() {
     cd "${HAB_CACHE_SRC_PATH}/postgresql-${db_version}"
-    make install world
+    make install-world
     # TODO: -explicitly set LD_LIBRARY_PATH and PATH for cross-platform compatibility
     #       -enable TCP/IP communication
 }
