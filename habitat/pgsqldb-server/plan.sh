@@ -2,17 +2,17 @@
 
 pkg_name=pgsqldb-server
 pkg_origin=brighthive
-pkg_version=0.1.0
-db_version="9.6.3"
-pkg_svc_user = "tpotdb"
+pkg_version=9.6.3
+pkg_svc_user=tpotdb
+pkg_svc_group=tpotdb
+svc_data_path="/var/lib/pgsql/data"
 pkg_maintainer="jee@brighthive.io stanley@brighthive.io aretha@brighthive.io"
 pkg_license=('Apache-2.0')
 pkg_description="PostgreSQL database service for TPOT transactional database."
-pkg_upstream_url="https://github.com/workforce-data-initiative/tpot-warehouse"
-# will this syntax pick db.ver from default.toml?
-pkg_source="https://ftp.postgresql.org/pub/source/v$db_version/postgresql-$db_version.tar.gz"
-pkg_filename="postgresql-${db_version}.tar.gz"
-pkg_shasum="df088372230b1dd21d87bb81686471508f4c42094d4f4f32b5d8e686fea69fa6"
+pkg_upstream_url=https://www.postgresql.org
+pkg_source=https://ftp.postgresql.org/pub/source/v${pkg_version}/postgresql-${pkg_version}.tar.gz
+pkg_filename=postgresql-${pkg_version}.tar.gz
+pkg_shasum=df088372230b1dd21d87bb81686471508f4c42094d4f4f32b5d8e686fea69fa6
 pkg_build_deps=(
   core/coreutils
   core/virtualenv
@@ -52,7 +52,6 @@ do_build() {
               --sysconfdir="$pkg_svc_config_path" \
               --localstatedir="$pkg_svc_var_path"
   make world
-  # ./configure --with-python --with-openssl --with-includes=/usr/local/include/openssl --with-libraries=/usr/local/lib
 }
 
 # Manually installing postgresql since habitat core

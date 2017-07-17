@@ -1,14 +1,31 @@
-#!/bin/sh
+#!/bin/sh -xe
 
-# create postgreSQL user to start the db daemon
-# replace pga_hba.conf (authorities definition)
-# replace postgresql.conf from config....
-# initdb
-#   pg_ctl initdb -D <data path> -l <log file> to initialize db cluster
-#       options: -L <location of input files>
-#                —pgdata=
-#                —xlogdir <transaction/write-ahead log directory>, put on separate disk
-#                —auth-host=<authmethod>
-#		         —auth-local=<authmethod>
-#		         —pwfile=
-#		         —locale=
+# redirect stderr
+exec 2>&1
+
+echo "Create postgres user that will run the db daemon"
+exec useradd -m {{pkg.svc_user}} -G {{pkg.svc_group}}
+
+echo "Create postres install directory and set permissions"
+exec mkdir -pv {{pkg.data_path}} && chown -Rv {{pkg.svc_user}}.{{pkg.svc_group}} {{pkg.data_path}}
+
+# echo "Update postgresql.conf (database configurations)"
+# exec cp -v ${pkg_svc_config_path}/postgresql.conf {{pkg.data_path}}/share
+
+# echo "Update pga_hba.conf (authorities definition)"
+# exec cp -v ${pkg_svc_config_path}/pga_hba.conf {{pkg.data_path}}/share
+
+echo "Initialize postgresql database"
+exec pg_ctl initdb --pgdata {{pkg.data_path}} \
+                   --log {{cfg.log_path}} \
+                   --mode {{cfg.shutdown_mode}} \
+#                  -o "—-xlogdir={{cfg.wal_path}}" \
+#                  "--username={{pkg.svc_user}}" \
+#                  "--auth=<authmethod" \
+#                  "-—auth-host=<authmethod>" \
+#		           "--auth-local=<authmethod>" \
+#		           "-—pwfile=" \
+#                  "--locale=" \
+
+echo "Checking status"
+exec pg_ctl status
