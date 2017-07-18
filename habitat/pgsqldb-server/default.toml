@@ -1,7 +1,7 @@
 
 [db]
-version = 9.6.3
-host = localhost
+version = "9.6.3"
+host = "localhost"
 port = 5432
 
 [ssl]
