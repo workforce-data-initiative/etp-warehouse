@@ -5,7 +5,7 @@ pkg_origin=brighthive
 pkg_version=9.6.3
 pkg_svc_user=tpotdb
 pkg_svc_group=tpotdb
-svc_data_path="/var/lib/pgsql/data"
+pkg_svc_data_path="/var/lib/pgsql/data"
 pkg_maintainer="jee@brighthive.io stanley@brighthive.io aretha@brighthive.io"
 pkg_license=('Apache-2.0')
 pkg_description="PostgreSQL database service for TPOT transactional database."
@@ -42,7 +42,7 @@ pkg_interpreters=(bin/bash)
 
 # Build postgresql with PL/Python server-side language
 do_build() {
-  cd "${HAB_CACHE_SRC_PATH}/postgresql-${db_version}"
+  cd "${HAB_CACHE_SRC_PATH}/postgresql-${pkg_version}"
   ./configure --disable-rpath \
               --with-openssl \
               --prefix="$pkg_prefix" \
@@ -57,7 +57,7 @@ do_build() {
 # Manually installing postgresql since habitat core
 # postgres is not yet fully supported for cluster mode
 do_install() {
-    cd "${HAB_CACHE_SRC_PATH}/postgresql-${db_version}"
+    cd "${HAB_CACHE_SRC_PATH}/postgresql-${pkg_version}"
     make install-world
     # TODO: -explicitly set LD_LIBRARY_PATH and PATH for cross-platform compatibility
     #       -enable TCP/IP communication
