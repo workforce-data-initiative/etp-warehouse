@@ -59,6 +59,4 @@ do_build() {
 do_install() {
     cd "${HAB_CACHE_SRC_PATH}/postgresql-${pkg_version}"
     make install-world
-    # TODO: -explicitly set LD_LIBRARY_PATH and PATH for cross-platform compatibility
-    #       -enable TCP/IP communication
 }
