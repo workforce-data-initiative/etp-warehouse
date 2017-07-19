@@ -1,0 +1,5 @@
+{
+  "db_host": "{{cfg.host}}",
+  "db_port": "{{cfg.port}}",
+  "db_ssl_port": "{{cfg.ssl-port}}"
+}

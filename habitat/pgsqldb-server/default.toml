@@ -1,0 +1,8 @@
+
+[db]
+version = "9.6.3"
+host = "localhost"
+port = 5432
+
+[ssl]
+port = 5433
