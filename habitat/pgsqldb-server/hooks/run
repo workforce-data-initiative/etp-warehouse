@@ -1,1 +1,9 @@
-#!/bin/sh -xe
+#!/bin/bash -xe
+
+# channel to std output
+exec 2>&1
+
+cd {{pkg.svc_var_path}}
+
+# start the service, with preconfigured logging and data paths
+pg_ctl start
