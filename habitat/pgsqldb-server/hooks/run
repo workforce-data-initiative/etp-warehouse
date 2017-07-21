@@ -4,6 +4,6 @@
 exec 2>&1
 
 cd {{pkg.svc_var_path}}
-
 # start the service, with preconfigured logging and data paths
-pg_ctl start
+echo "Starting the postgresql service"
+exec pg_ctl start
