@@ -1,9 +1,10 @@
-#!/bin/bash -xe
+#!{{pkgPathFor "core/bash"}}/bin/bash -xe
 
-# channel to std output
 exec 2>&1
 
 cd {{pkg.svc_var_path}}
+
 # start the service, with preconfigured logging and data paths
 echo "Starting the postgresql service"
 exec pg_ctl start
+

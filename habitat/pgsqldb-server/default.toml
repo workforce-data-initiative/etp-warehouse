@@ -1,8 +1,12 @@
 
 [db]
-version = "9.6.3"
-host = "localhost"
+host = 'localhost'
 port = 5432
 
 [ssl]
 port = 5433
+
+[superuser]
+name = 'tpotdb'
+group = 'tpotdb'
+password = ''
