@@ -22,9 +22,9 @@ pkg_deps=(
     core/openssl 
   )
 pkg_build_deps=(
-    core/coreutils
-    core/gcc
-    core/make
+  core/coreutils
+  core/gcc
+  core/make
   )
 pkg_lib_dirs=(lib)
 pkg_include_dirs=(include)
@@ -60,5 +60,4 @@ do_install() {
   cd "${HAB_CACHE_SRC_PATH}/${pkg_dirname}"
   make install
 }
-
 
