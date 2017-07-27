@@ -3,22 +3,12 @@
 # redirect stderr
 exec 2>&1
 
-echo "Create postgres user that will run the db daemon"
-exec useradd -m {{pkg.svc_user}} -G {{pkg.svc_group}}
-
-echo "Create postres install directory and set permissions"
-exec mkdir -pv {{pkg.svc_data_path}} && chown -Rv {{pkg.svc_user}}.{{pkg.svc_group}} {{pkg.svc_data_path}}
-
-# echo "Update postgresql.conf (database configurations)"
-# exec cp -v ${pkg.svc_config_path}/postgresql.conf {{pkg.svc_data_path}}/share
-
-# echo "Update pga_hba.conf (authorities definition)"
-# exec cp -v ${pkg.svc_config_path}/pga_hba.conf {{pkg.svc_data_path}}/share
+# # symbolic link everything to the service var path
 
 echo "Initialize postgresql database"
-exec pg_ctl initdb --pgdata {{pkg.svc_data_path}} \
+exec pg_ctl -D {{pkg.svc_path}}/pgsql/data initdb \
                    --log {{cfg.log_path}} \
-                   --mode {{cfg.shutdown_mode}} \
+                   --mode {{cfg.shutdown_mode}}
 #                  -o "—-xlogdir={{cfg.wal_path}}" \
 #                  "--username={{pkg.svc_user}}" \
 #                  "--auth=<authmethod" \
@@ -27,5 +17,18 @@ exec pg_ctl initdb --pgdata {{pkg.svc_data_path}} \
 #		           "-—pwfile=" \
 #                  "--locale=" \
 
-echo "Checking status"
-exec pg_ctl status
+
+# echo "Create postgres user that will run the db daemon"
+# exec useradd -m {{pkg.svc_user}} -G {{pkg.svc_group}}
+# exec sudo adduser {{pkg.svc_user}} --disabled-password
+# exec sudo usermod -aG sudo {{pkg.svc_user}}
+# exec su - {{pkg.svc_user}}
+
+# echo "Create postres install directory and set permissions"
+# exec mkdir -pv {{pkg.svc_data_path}}/pgsql/data && chown -Rv {{pkg.svc_user}}.{{pkg.svc_group}} {{pkg.svc_data_path}}/pgsql/data
+
+# echo "Update postgresql.conf (database configurations)"
+# exec cp -v ${pkg.svc_config_path}/postgresql.conf {{pkg.svc_data_path}}/share
+
+# echo "Update pga_hba.conf (authorities definition)"
+# exec cp -v ${pkg.svc_config_path}/pga_hba.conf {{pkg.svc_data_path}}/share

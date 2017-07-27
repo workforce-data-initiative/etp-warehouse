@@ -5,7 +5,7 @@ pkg_origin=brighthive
 pkg_version=9.6.3
 pkg_svc_user=tpotdb
 pkg_svc_group=tpotdb
-pkg_svc_data_path="/var/lib/pgsql/data"
+pkg_svc_data_path=/usr/local/pgsql/data
 pkg_maintainer="jee@brighthive.io stanley@brighthive.io aretha@brighthive.io"
 pkg_license=('Apache-2.0')
 pkg_description="PostgreSQL database service for TPOT transactional database."
@@ -17,6 +17,7 @@ pkg_build_deps=(
   core/coreutils
   core/virtualenv
   core/gcc
+  core/gcc-libs
   core/make)
 pkg_deps=(
   core/bash
@@ -27,7 +28,6 @@ pkg_deps=(
   core/readline
   core/zlib
   core/libossp-uuid
-  core/wal-e
   )
 pkg_lib_dirs=(lib)
 pkg_include_dirs=(include)
@@ -40,6 +40,15 @@ pkg_exports=(
 pkg_exposes=(port ssl-port)
 pkg_interpreters=(bin/bash)
 
+do_clean() {
+  do_default_clean
+}
+
+do_prepare() {
+  build_line "Creating postgres data directories for the postgres service ..."
+  mkdir -pv $pkg_svc_path/pgsql/data/
+}
+
 # Build postgresql with PL/Python server-side language
 do_build() {
   cd "${HAB_CACHE_SRC_PATH}/postgresql-${pkg_version}"
@@ -51,12 +60,17 @@ do_build() {
               --with-libraries="$LD_LIBRARY_PATH" \
               --sysconfdir="$pkg_svc_config_path" \
               --localstatedir="$pkg_svc_var_path"
-  make world
+  make
 }
 
 # Manually installing postgresql since habitat core
 # postgres is not yet fully supported for cluster mode
 do_install() {
-    cd "${HAB_CACHE_SRC_PATH}/postgresql-${pkg_version}"
-    make install-world
+  cd "${HAB_CACHE_SRC_PATH}/postgresql-${pkg_version}"
+  make install
+}
+
+do_end() {
+  build_line "Symbolic linking all required files ..."
+  ln -fs {{pkg.path}}/* {{pkg.svc_var_path}}
 }
