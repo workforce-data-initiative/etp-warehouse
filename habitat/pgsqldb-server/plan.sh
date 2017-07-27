@@ -3,9 +3,11 @@
 pkg_name=pgsqldb-server
 pkg_origin=brighthive
 pkg_version=9.6.3
-pkg_svc_user=tpotdb
-pkg_svc_group=tpotdb
-pkg_svc_data_path=/usr/local/pgsql/data
+#pkg_prefix=/usr/local/pgsql
+# pkg_run_user=tpotdb
+# pkg_svc_user=tpotdb
+# pkg_svc_group=tpotdb
+pkg_svc_data_path=/var/lib/pgsql/data
 pkg_maintainer="jee@brighthive.io stanley@brighthive.io aretha@brighthive.io"
 pkg_license=('Apache-2.0')
 pkg_description="PostgreSQL database service for TPOT transactional database."
@@ -15,16 +17,15 @@ pkg_filename=postgresql-${pkg_version}.tar.gz
 pkg_shasum=df088372230b1dd21d87bb81686471508f4c42094d4f4f32b5d8e686fea69fa6
 pkg_build_deps=(
   core/coreutils
-  core/virtualenv
   core/gcc
-  core/gcc-libs
   core/make)
+
 pkg_deps=(
+  core/shadow
   core/bash
-  core/envdir
+  core/python
   core/glibc
   core/openssl
-  core/perl
   core/readline
   core/zlib
   core/libossp-uuid
@@ -38,39 +39,31 @@ pkg_exports=(
     [ssl-port]=ssl.port
     )
 pkg_exposes=(port ssl-port)
-pkg_interpreters=(bin/bash)
 
-do_clean() {
-  do_default_clean
-}
+pkg_svc_user=root
+pkg_svc_group=$pkg_svc_user
 
 do_prepare() {
-  build_line "Creating postgres data directories for the postgres service ..."
-  mkdir -pv $pkg_svc_path/pgsql/data/
+  build_line "Creating the data directory for postgres ..."
+  mkdir -pv $pkg_svc_path/pgsql/data && chown -Rv $pkg_svc_user $pkg_svc_path/pgsql
 }
-
 # Build postgresql with PL/Python server-side language
 do_build() {
   cd "${HAB_CACHE_SRC_PATH}/postgresql-${pkg_version}"
-  ./configure --disable-rpath \
+  ./configure --with-python \
+	      --disable-rpath \
               --with-openssl \
-              --prefix="$pkg_prefix" \
               --with-uuid=ossp \
-              --with-includes="$LD_INCLUDE_PATH" \
-              --with-libraries="$LD_LIBRARY_PATH" \
-              --sysconfdir="$pkg_svc_config_path" \
-              --localstatedir="$pkg_svc_var_path"
+              --with-includes=$LD_INCLUDE_PATH \
+              --with-libraries=$LD_LIBRARY_PATH \
+              --sysconfdir=$pkg_svc_config_path \
+              --localstatedir=$pkg_svc_var_path
   make
 }
 
-# Manually installing postgresql since habitat core
+# Manually install postgresql since habitat core
 # postgres is not yet fully supported for cluster mode
 do_install() {
-  cd "${HAB_CACHE_SRC_PATH}/postgresql-${pkg_version}"
-  make install
-}
-
-do_end() {
-  build_line "Symbolic linking all required files ..."
-  ln -fs {{pkg.path}}/* {{pkg.svc_var_path}}
+    cd "${HAB_CACHE_SRC_PATH}/postgresql-${pkg_version}"
+    make install
 }
