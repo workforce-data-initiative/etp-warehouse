@@ -3,7 +3,6 @@
 pkg_name=pgsqldb-server
 pkg_origin=brighthive
 pkg_version=9.6.3
-pkg_svc_data_path=/var/lib/pgsql/data
 pkg_maintainer="jee@brighthive.io stanley@brighthive.io aretha@brighthive.io"
 pkg_license=('Apache-2.0')
 pkg_description="PostgreSQL database service for TPOT transactional database."
@@ -12,6 +11,7 @@ pkg_source=https://ftp.postgresql.org/pub/source/v${pkg_version}/postgresql-${pk
 pkg_shasum=df088372230b1dd21d87bb81686471508f4c42094d4f4f32b5d8e686fea69fa6
 pkg_dirname=postgresql-${pkg_version}
 pkg_deps=(
+    core/coreutils
     core/bash
     core/python
     core/glibc
@@ -19,6 +19,7 @@ pkg_deps=(
     core/shadow    
     core/readline
     core/zlib
+    core/runit
     core/openssl 
   )
 pkg_build_deps=(
