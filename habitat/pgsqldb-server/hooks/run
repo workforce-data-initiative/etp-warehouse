@@ -2,9 +2,9 @@
 
 exec 2>&1
 
-cd {{pkg.svc_var_path}}
+echo "Executing run hook"
 
-# start the service, with preconfigured logging and data paths
-echo "Starting the postgresql service"
-exec pg_ctl start
+echo "Starting postgresql database service"
+exec chpst -U {{cfg.superuser.name}} -u {{cfg.superuser.name}} \
+        {{cfg.binpath}}/pg_ctl start -D {{cfg.db.datapath}}
 
