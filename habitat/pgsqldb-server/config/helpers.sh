@@ -6,33 +6,18 @@ check_user_exists() {
 
 }
 
-check_group_exists() {
-    echo $(getent group $1 > /dev/null 2>&1; echo $?) 
-}
-
 delete_db_superuser() {
-    deluser {{cfg.superuser.name}}
-    delgroup {{cfg.superuser.group}}
-
-}
-
-create_db_superuser_group() {
-    if [ $(check_group_exists "{{cfg.superuser.group}}") -ne 0 ]; then
-        echo "Create database superuser group"
-        addgroup {{cfg.superuser.group}}
-    fi        
+    userdel --force --remove {{cfg.superuser.name}}
 
 }
 
 create_db_superuser() {
-    create_db_superuser_group
-
     if [ $(check_user_exists "{{cfg.superuser.name}}") -eq 1 ]; then
         echo "Create database superuser"
-        adduser -G {{cfg.superuser.group}} {{cfg.superuser.name}}
+        useradd --user-group --create-home {{cfg.superuser.name}}
     fi
 
-    id {{cfg.superuser.name}}
+    echo "User-$(id {{cfg.superuser.name}})"
 
 }
 
@@ -41,7 +26,7 @@ setup_db_datapath() {
     echo "Create postgres data directories"
     mkdir -pv $parent_datapath
     chown -LRv {{cfg.superuser.name}}:{{cfg.superuser.group}} $parent_datapath
-    chmod -Rv 700 $parent_datapath
+    chmod -Rv 00760 $parent_datapath
     
 }
 

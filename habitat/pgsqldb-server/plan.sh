@@ -43,22 +43,20 @@ pkg_svc_group=root
 
 # Build postgresql with PL/Python server-side language
 do_build() {
-    cd "${HAB_CACHE_SRC_PATH}/${pkg_dirname}"
     ./configure --with-python \
-	            --disable-rpath \
+	        --disable-rpath \
                 --with-openssl \
                 --with-uuid=ossp \
+		--prefix="$pkg_prefix" \
                 --with-includes="$LD_INCLUDE_PATH" \
-                --with-libraries="$LD_LIBRARY_PATH" \
-                --sysconfdir="$pkg_svc_config_path" \
-                --localstatedir="$pkg_svc_var_path"
+                --with-libraries="$LD_LIBRARY_PATH"
     make
 
 }
 
 # Install built postgresql
 do_install() {
-  cd "${HAB_CACHE_SRC_PATH}/${pkg_dirname}"
   make install
+
 }
 

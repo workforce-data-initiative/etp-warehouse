@@ -13,3 +13,6 @@ port = 5433
 name = 'tpotdb'
 group = 'tpotdb'
 password = ''
+
+[logging]
+debug_level = 3

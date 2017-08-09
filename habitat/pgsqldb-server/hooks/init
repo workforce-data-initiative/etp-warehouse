@@ -1,13 +1,10 @@
-#!{{pkgPathFor "core/bash"}}/bin/bash -x
+#!{{pkgPathFor "core/bash"}}/bin/bash -e
 
 exec 2>&1
 
 
 echo "Executing init hook"
 source {{pkg.svc_config_path}}/helpers.sh
-
-echo "Configure library path"
-exec ldconfig {{cfg.libpath}}
 
 create_db_superuser
 # set_dir_permissions
@@ -23,11 +20,9 @@ if [ ! -d "{{cfg.db.datapath}}" ]; then
    
     echo "Database does not exist, initializing with 'initdb'"
     exec chpst -U {{cfg.superuser.name}} -u {{cfg.superuser.name}} \
-	{{cfg.binpath}}/initdb -U {{cfg.superuser.name}} -E utf8 \
+	initdb -U {{cfg.superuser.name}} -E utf8 \
 			-D {{cfg.db.datapath}} --locale POSIX \
                 	--data-checksums
+else
+    echo "Database exists"
 fi
-
-echo "Checking status"
-exec chpst -U {{cfg.superuser.name}} -u {{cfg.superuser.name}} \
-	{{cfg.binpath}}/pg_ctl status
