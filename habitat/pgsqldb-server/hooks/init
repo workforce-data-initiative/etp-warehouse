@@ -1,0 +1,28 @@
+#!{{pkgPathFor "core/bash"}}/bin/bash -e
+
+exec 2>&1
+
+
+echo "Executing init hook"
+source {{pkg.svc_config_path}}/helpers.sh
+
+create_db_superuser
+# set_dir_permissions
+
+if [ ! -d "{{cfg.db.datapath}}" ]; then
+    setup_db_datapath
+
+    # echo "Update postgresql.conf (database configurations)"
+    # cp -v ${pkg.svc_config_path}/postgresql.conf {{pkg.svc_data_path}}/share
+    
+    # echo "Update pga_hba.conf (authorities definition)"
+    # cp -v ${pkg.svc_config_path}/pga_hba.conf {{pkg.svc_data_path}}/share
+   
+    echo "Database does not exist, initializing with 'initdb'"
+    exec chpst -U {{cfg.superuser.name}} -u {{cfg.superuser.name}} \
+	initdb -U {{cfg.superuser.name}} -E utf8 \
+			-D {{cfg.db.datapath}} --locale POSIX \
+                	--data-checksums
+else
+    echo "Database exists"
+fi

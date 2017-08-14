@@ -1,0 +1,18 @@
+binpath = '/usr/local/pgsql/bin'
+libpath = '/usr/local/pgsql/lib'
+
+[db]
+host = 'localhost'
+port = 5432
+datapath = '/var/local/pgsql/data'
+
+[ssl]
+port = 5433
+
+[superuser]
+name = 'tpotdb'
+group = 'tpotdb'
+password = ''
+
+[logging]
+debug_level = 3
