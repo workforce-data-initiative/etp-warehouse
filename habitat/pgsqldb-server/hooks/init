@@ -12,11 +12,13 @@ create_db_superuser
 if [ ! -d "{{cfg.db.datapath}}" ]; then
     setup_db_datapath
 
-    # echo "Update postgresql.conf (database configurations)"
-    # cp -v ${pkg.svc_config_path}/postgresql.conf {{pkg.svc_data_path}}/share
+    echo "Update postgresql.conf (database configurations)"
+    cp -v {{cfg.db.datapath}}/postgresql.conf {{cfg.db.datapath}}/postgresql.conf.orig 
+    cp -v ${pkg.svc_config_path}/postgresql.conf {{cfg.db.datapath}}/postgresql.conf 
     
-    # echo "Update pga_hba.conf (authorities definition)"
-    # cp -v ${pkg.svc_config_path}/pga_hba.conf {{pkg.svc_data_path}}/share
+    echo "Update pg_hba.conf (host-based authorities definition)"
+    cp -v {{cfg.db.datapath}}/pg_hba.conf {{cfg.db.datapath}}/pg_hba.conf.orig
+    cp -v ${pkg.svc_config_path}/pg_hba.conf {{cfg.db.datapath}}/pg_hba.conf 
    
     echo "Database does not exist, initializing with 'initdb'"
     exec chpst -U {{cfg.superuser.name}} -u {{cfg.superuser.name}} \
