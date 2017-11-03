@@ -1,0 +1,13 @@
+#!{{pkgPathFor "core/bash"}}/bin/bash -e
+
+exec 2>&1
+
+echo "Executing post-run hook"
+
+echo "Checking postgres database service status"
+exec chpst -U {{cfg.superuser.name}} -u {{cfg.superuser.name}} \
+	pg_isready -U {{cfg.superuser.name}}
+
+
+
+

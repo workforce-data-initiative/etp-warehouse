@@ -4,7 +4,7 @@ exec 2>&1
 
 echo "Executing run hook"
 
-# TODO: Add ssl option -l & set log file 
+# TODO: Add ssl option -l 
 echo "Starting postgresql database service"
 exec chpst -U {{cfg.superuser.name}} -u {{cfg.superuser.name}} \
 	postgres -D {{cfg.db.datapath}}
