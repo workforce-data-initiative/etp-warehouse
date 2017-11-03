@@ -1,6 +1,6 @@
 pyyaml==3.12
-sqlalchemy==1.1.13
-sqlalchemy-utils==0.32.16
+sqlalchemy==1.1.14
+sqlalchemy-utils==0.32.19
 psycopg2==2.7.3.2
-alembic==0.9.5
-pytest==3.2.2
+alembic==0.9.6
+pytest==3.2.3
