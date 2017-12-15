@@ -34,11 +34,7 @@ jobs:
               python3 -m venv "${VENV_NAME}"
               . tpot-wh/bin/activate
               pip install -r ~/wdi/tpot-warehouse/requirements.dev.txt
-
-      - run:
-          name: Update database connection parameters
-          command: mv -v conf/db.dev.yml conf/db.yml
-
+ 
       - run:
           name: Run transactional database application tests
           command: |
