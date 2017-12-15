@@ -29,10 +29,10 @@ xargs = context.get_x_argument(as_dictionary=True)
 
 
 def usage():
-    usage_str = "Usage: alembic [-c CONFIG] -n SCHEMA NAME " \
-                "[--adapter=SQLALCHEMY ADAPTER ][--dbconf=DB (YAML) CONFIG]"
-    eg_str = "       alembic -c alembic.ini -n schema1 " \
-             "--adapter=sqlite --dbconf=conf/db.yml"
+    usage_str = "Usage: alembic [-c CONFIG] -n SCHEMA NAME (transactional|warehouse) " \
+                "[--adapter=SQLALCHEMY ADAPTER ][--dbconf=DB (TOML) CONFIG]"
+    eg_str = "       alembic -c alembic.ini -n transactional" \
+             "--adapter=sqlite --dbconf=deploy/pgsqldb-server/habitat/default.toml"
     return "{0}\n{1}".format(usage_str, eg_str)
 
 

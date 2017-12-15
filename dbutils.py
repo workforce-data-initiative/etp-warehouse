@@ -1,5 +1,5 @@
 import logging
-import yaml
+import toml
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 
@@ -127,22 +127,22 @@ db_uris = {'sqlite': SqliteDbConnectionUri().__class__,
 
 def read_dbconf(conf_file, db_adapter, schema_name):
     """
-    Read (yaml format) database configuration file
+    Read (toml format) database configuration file
 
-    :param conf_file: YAML file containing database connection params
+    :param conf_file: TOML file containing database connection params
     :param db_adapter: Database adapter name
     :param schema_name: 'schema' used loosely here to indicate which
                         database is being accessed, [transactional | warehouse]
     :raises: TypeError, when conf_file or db_adapter passed is None
-             FileNotFoundError if conf_file is not found or yaml.YAMLError
-             if conf_file yaml is not read
+             FileNotFoundError if conf_file is not found or toml.TomlDecodeError
+             if conf_file toml is not read
     :return: dict of database conf for the specified db_adapter
     """
 
     try:
-        with open(conf_file, 'r') as yml_conf:
-            conf = yaml.load(yml_conf)
-    except(TypeError, FileNotFoundError, yaml.YAMLError) as err:
+        with open(conf_file, 'r') as toml_conf:
+            conf = toml.load(toml_conf)
+    except(TypeError, FileNotFoundError, toml.TomlDecodeError) as err:
         logger.debug(err)
         raise
 
@@ -154,7 +154,7 @@ def conn_uri_factory(conf_file, db_adapter, schema_name):
     Create the applicable connection uri for the database adapter
     passed using parameters read from config file
 
-    :param conf_file: YAML file containing database connection params
+    :param conf_file: TOML file containing database connection params
                       used by SQLAlchemy to create connection. Supported
                       fields include SQLAlchemy database adapter name, host
                       port, username, password, database
