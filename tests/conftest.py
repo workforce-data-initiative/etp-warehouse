@@ -22,8 +22,8 @@ def pytest_addoption(parser):
                      help="Alembic config INI path")
     parser.addoption('--dbconf', action='store',
                      default=os.path.join(os.path.dirname(__file__),
-                                          '../conf/db.yml'),
-                     help='Database connection parameters YAML path')
+                                          '../deploy/pgsqldb-server/habitat/default.toml'),
+                     help='Database connection parameters TOML path')
 
 
 @pytest.fixture(scope='session')
@@ -47,8 +47,8 @@ def db_adapter(request):
 
 
 @pytest.fixture(scope='session')
-def alchemy_url(db_conf, db_adapter, schema_name, request):
-    return conn_uri_factory(db_conf, db_adapter, schema_name)
+def alchemy_url(db_conf, db_adapter, request):
+    return conn_uri_factory(db_conf, db_adapter)
 
 
 @pytest.fixture(scope='session', autouse=True)

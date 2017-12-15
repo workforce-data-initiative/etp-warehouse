@@ -95,9 +95,9 @@ class PsqlDbConnectionUri(DbConnectionUri):
 
         db_conf = PsqlDbConfValidator.validate_conf(db_conf)
 
-        return cls.conn_uri.format(db_adapter=cls.db_adapter, username=db_conf['username'],
-                                    password=db_conf['password'], host=db_conf['host'],
-                                    port=db_conf['port'], database=db_conf['database'])
+        return cls.conn_uri.format(db_adapter=cls.db_adapter, username=db_conf['superuser']['name'],
+                                    password=db_conf['superuser']['password'], host=db_conf['db']['host'],
+                                    port=db_conf['db']['port'], database=db_conf['db']['name'])
 
 
 class DbConnection(object):
@@ -125,18 +125,15 @@ db_uris = {'sqlite': SqliteDbConnectionUri().__class__,
            'postgresql': PsqlDbConnectionUri().__class__}
 
 
-def read_dbconf(conf_file, db_adapter, schema_name):
+def read_dbconf(conf_file):
     """
     Read (toml format) database configuration file
 
     :param conf_file: TOML file containing database connection params
-    :param db_adapter: Database adapter name
-    :param schema_name: 'schema' used loosely here to indicate which
-                        database is being accessed, [transactional | warehouse]
     :raises: TypeError, when conf_file or db_adapter passed is None
              FileNotFoundError if conf_file is not found or toml.TomlDecodeError
              if conf_file toml is not read
-    :return: dict of database conf for the specified db_adapter
+    :return: dict of database conf
     """
 
     try:
@@ -146,10 +143,10 @@ def read_dbconf(conf_file, db_adapter, schema_name):
         logger.debug(err)
         raise
 
-    return conf.get(db_adapter).get(schema_name)
+    return conf
 
 
-def conn_uri_factory(conf_file, db_adapter, schema_name):
+def conn_uri_factory(conf_file, db_adapter):
     """
     Create the applicable connection uri for the database adapter
     passed using parameters read from config file
@@ -159,13 +156,11 @@ def conn_uri_factory(conf_file, db_adapter, schema_name):
                       fields include SQLAlchemy database adapter name, host
                       port, username, password, database
     :param db_adapter: Database adapter name as accepted by SQLAlchemy
-    :param schema_name: 'schema' used loosely here to indicate which
-                        database is being accessed, [transactional | warehouse]
     :return: SQLAlchemy connection uri for the database with specified adapter
     """
 
     try:
-        db_conf = read_dbconf(conf_file, db_adapter, schema_name)
+        db_conf = read_dbconf(conf_file)
     except Exception as err:
         logger.debug(err)
         raise

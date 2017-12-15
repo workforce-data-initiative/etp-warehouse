@@ -39,8 +39,7 @@ def usage():
 def conn_url():
     try:
         url = conn_uri_factory(xargs.get("dbconf", config.get_main_option("default_dbconf")),
-                               xargs.get("adapter", config.get_main_option("default_adapter")),
-                               config.config_ini_section)
+                               xargs.get("adapter", config.get_main_option("default_adapter")))
     except Exception as err:
         logger.debug(err)
         raise
