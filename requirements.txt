@@ -2,4 +2,4 @@ pyyaml==3.12
 SQLAlchemy==1.1.15
 psycopg2==2.7.3.2
 alembic==0.9.6
-toml==0.9.3
+toml==0.9.3.1
