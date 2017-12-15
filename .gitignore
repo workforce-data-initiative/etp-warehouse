@@ -90,6 +90,9 @@ ENV/
 
 # IDE/Editor files
 .idea/
+.project
+.pydevproject
+.*.swp
 
 # OS files
 .DS_Store
