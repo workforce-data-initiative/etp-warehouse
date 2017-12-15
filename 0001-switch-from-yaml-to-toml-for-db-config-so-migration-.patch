@@ -1,0 +1,106 @@
+From 001c51acf91a9456a4dc065dfba5910145f35a68 Mon Sep 17 00:00:00 2001
+From: Aretha Kebirungi <aretha.kebirungi@andela.com>
+Date: Fri, 15 Dec 2017 19:36:52 +0300
+Subject: [PATCH 1/2] switch from yaml to toml for db config so migration uses
+ same config specified in hab plan
+
+---
+ dbutils.py                      | 18 +++++++++---------
+ migrations/transactional/env.py |  8 ++++----
+ requirements.dev.txt            |  1 +
+ requirements.txt                |  2 +-
+ 4 files changed, 15 insertions(+), 14 deletions(-)
+
+diff --git a/dbutils.py b/dbutils.py
+index 4a1f530..7f20bd4 100644
+--- a/dbutils.py
++++ b/dbutils.py
+@@ -1,5 +1,5 @@
+ import logging
+-import yaml
++import toml
+ from sqlalchemy import create_engine
+ from sqlalchemy.orm import sessionmaker, Session
+ 
+@@ -127,22 +127,22 @@ db_uris = {'sqlite': SqliteDbConnectionUri().__class__,
+ 
+ def read_dbconf(conf_file, db_adapter, schema_name):
+     """
+-    Read (yaml format) database configuration file
++    Read (toml format) database configuration file
+ 
+-    :param conf_file: YAML file containing database connection params
++    :param conf_file: TOML file containing database connection params
+     :param db_adapter: Database adapter name
+     :param schema_name: 'schema' used loosely here to indicate which
+                         database is being accessed, [transactional | warehouse]
+     :raises: TypeError, when conf_file or db_adapter passed is None
+-             FileNotFoundError if conf_file is not found or yaml.YAMLError
+-             if conf_file yaml is not read
++             FileNotFoundError if conf_file is not found or toml.TomlDecodeError
++             if conf_file toml is not read
+     :return: dict of database conf for the specified db_adapter
+     """
+ 
+     try:
+-        with open(conf_file, 'r') as yml_conf:
+-            conf = yaml.load(yml_conf)
+-    except(TypeError, FileNotFoundError, yaml.YAMLError) as err:
++        with open(conf_file, 'r') as toml_conf:
++            conf = toml.load(toml_conf)
++    except(TypeError, FileNotFoundError, toml.TomlDecodeError) as err:
+         logger.debug(err)
+         raise
+ 
+@@ -154,7 +154,7 @@ def conn_uri_factory(conf_file, db_adapter, schema_name):
+     Create the applicable connection uri for the database adapter
+     passed using parameters read from config file
+ 
+-    :param conf_file: YAML file containing database connection params
++    :param conf_file: TOML file containing database connection params
+                       used by SQLAlchemy to create connection. Supported
+                       fields include SQLAlchemy database adapter name, host
+                       port, username, password, database
+diff --git a/migrations/transactional/env.py b/migrations/transactional/env.py
+index 48a11a8..9229358 100644
+--- a/migrations/transactional/env.py
++++ b/migrations/transactional/env.py
+@@ -29,10 +29,10 @@ xargs = context.get_x_argument(as_dictionary=True)
+ 
+ 
+ def usage():
+-    usage_str = "Usage: alembic [-c CONFIG] -n SCHEMA NAME " \
+-                "[--adapter=SQLALCHEMY ADAPTER ][--dbconf=DB (YAML) CONFIG]"
+-    eg_str = "       alembic -c alembic.ini -n schema1 " \
+-             "--adapter=sqlite --dbconf=conf/db.yml"
++    usage_str = "Usage: alembic [-c CONFIG] -n SCHEMA NAME (transactional|warehouse) " \
++                "[--adapter=SQLALCHEMY ADAPTER ][--dbconf=DB (TOML) CONFIG]"
++    eg_str = "       alembic -c alembic.ini -n transactional" \
++             "--adapter=sqlite --dbconf=deploy/pgsqldb-server/habitat/default.toml"
+     return "{0}\n{1}".format(usage_str, eg_str)
+ 
+ 
+diff --git a/requirements.dev.txt b/requirements.dev.txt
+index 0f5edec..01aa2d9 100644
+--- a/requirements.dev.txt
++++ b/requirements.dev.txt
+@@ -4,3 +4,4 @@ sqlalchemy-utils==0.32.21
+ psycopg2==2.7.3.2
+ alembic==0.9.6
+ pytest==3.3.1
++toml==0.9.3
+\ No newline at end of file
+diff --git a/requirements.txt b/requirements.txt
+index 06d9dd9..8968b0e 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -2,4 +2,4 @@ pyyaml==3.12
+ SQLAlchemy==1.1.15
+ psycopg2==2.7.3.2
+ alembic==0.9.6
+-
++toml==0.9.3
+\ No newline at end of file
+-- 
+2.11.0 (Apple Git-81)
+
