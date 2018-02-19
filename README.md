@@ -36,8 +36,8 @@ To set up in local development environment:
 3. Create Python virtualenv and install requirements
 
    ```
-   python3 -m venv ${VENV_NAME}
-   . ${VENV_NAME}/bin/activate
+   python3 -m venv ${VENV_NAME} ${ENV_DIR}
+   . ${ENV_DIR}/bin/activate
    pip install -r requirements.dev.txt
    ```
    
