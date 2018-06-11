@@ -1,5 +1,6 @@
-# Training Provider Outcomes Data Warehouse
-Warehouse for aggregated training provider outcomes data
+## Training Provider Outcomes Toolkit (TPOT) - Transactional Data Store
+
+Transactional database holding pre-aggregated data that services the outcomes warehouse
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Updates](https://pyup.io/repos/github/workforce-data-initiative/tpot-warehouse/shield.svg)](https://pyup.io/repos/github/workforce-data-initiative/tpot-warehouse/)
