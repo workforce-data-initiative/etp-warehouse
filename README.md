@@ -1,3 +1,6 @@
+**_IMPORTANT NOTE: THIS REPOSITORY IS NOW RETIRED. CURRENT TRANSACTIONAL DB IS [HERE](https://github.com/brighthive/tpot-transactional)_**
+
+
 ## Training Provider Outcomes Toolkit (TPOT) - Transactional Data Store
 
 Transactional database holding pre-aggregated data that services the outcomes warehouse
